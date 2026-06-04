@@ -57,3 +57,7 @@ Bu proje kapsamında:
 - Rol bazlı yetkilendirme yapısını uyguladım.
 - Web uygulamalarında CRUD operasyonları geliştirdim.
 - Kurumsal iş süreçlerini analiz ederek yazılım çözümüne dönüştürdüm.
+
+  ## 👩‍💻 Geliştirici
+**Aleyna Aydoğdu**  
+Yönetim Bilişim Sistemleri
