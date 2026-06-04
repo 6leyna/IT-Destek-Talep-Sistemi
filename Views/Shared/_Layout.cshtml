@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Tuzla Belediyesi IT Destek</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#005BAA',
+                        secondary: '#1E88E5',
+                        background: '#F5F7FA',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-transition { transition: all 0.3s ease-in-out; }
+        .dropdown-menu { display: none; }
+        .dropdown-menu.show { display: block; }
+    </style>
+</head>
+<body class="bg-background font-sans">
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <!-- Top Navigation Bar -->
+        <nav class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+            <div class="flex items-center justify-between px-6 py-3">
+                <!-- Left: Logo and Toggle -->
+                <div class="flex items-center space-x-4">
+                    <button id="sidebarToggle" class="text-gray-600 hover:text-primary focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <a href="/Dashboard" class="flex items-center space-x-3">
+                        <img src="/images/tuzla-belediyesi-yeni-logo.jpg" alt="Tuzla Belediyesi" class="w-10 h-10 rounded-lg object-cover bg-white p-1" />
+                        <div class="hidden md:block">
+                            <h1 class="text-lg font-bold text-gray-800">Tuzla Belediyesi</h1>
+                            <p class="text-xs text-gray-600">IT Destek Sistemi</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Right: Notifications and Profile -->
+                <div class="flex items-center space-x-4">
+                    <!-- Notifications -->
+                    <button class="relative text-gray-600 hover:text-primary">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </button>
+                    
+                    <!-- User Profile Dropdown -->
+                    <div class="relative" id="userDropdown">
+                        <button onclick="toggleDropdown()" class="flex items-center space-x-2 focus:outline-none">
+                            <div class="w-9 h-9 bg-primary rounded-full flex items-center justify-center text-white font-semibold">
+                                @(User.Identity.Name?[0].ToString().ToUpper() ?? "U")
+                            </div>
+                            <span class="hidden md:block text-sm font-medium text-gray-700">@User.Identity.Name</span>
+                            <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div id="dropdownMenu" class="dropdown-menu absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100">
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <p class="text-sm text-gray-700 font-medium">@User.Identity.Name</p>
+                                <p class="text-xs text-gray-500">Kurumsal Kullanıcı</p>
+                            </div>
+                            <ul class="py-2">
+                                <li>
+                                    <a href="/Dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                            <i class="fas fa-sign-out-alt mr-2"></i>Çıkış Yap
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar-transition fixed top-16 left-0 h-full w-64 bg-white shadow-lg transform -translate-x-full lg:translate-x-0 z-40">
+            <div class="p-4">
+                <nav class="space-y-2">
+                    <a href="/Dashboard" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition">
+                        <i class="fas fa-tachometer-alt w-5"></i>
+                        <span class="font-medium">Dashboard</span>
+                    </a>
+                    <a href="/Tickets/Create" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition">
+                        <i class="fas fa-plus-circle w-5"></i>
+                        <span class="font-medium">Yeni Talep Oluştur</span>
+                    </a>
+                    <a href="/Tickets" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition">
+                        <i class="fas fa-ticket-alt w-5"></i>
+                        <span class="font-medium">Taleplerim</span>
+                    </a>
+                    <a href="/KnowledgeBase" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition">
+                        <i class="fas fa-book w-5"></i>
+                        <span class="font-medium">Bilgi Bankası</span>
+                    </a>
+                    <a href="/Devices" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition">
+                        <i class="fas fa-laptop w-5"></i>
+                        <span class="font-medium">Cihaz Envanteri</span>
+                    </a>
+                    <a href="/Reports" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition">
+                        <i class="fas fa-chart-bar w-5"></i>
+                        <span class="font-medium">Raporlar</span>
+                    </a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                    <a href="/Settings" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition">
+                        <i class="fas fa-cog w-5"></i>
+                        <span class="font-medium">Ayarlar</span>
+                    </a>
+                    }
+                </nav>
+            </div>
+            
+            <!-- Sidebar Footer -->
+            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+                <p class="text-xs text-gray-500 text-center">
+                    © 2026 Tuzla Belediyesi<br/>Bilgi İşlem Müdürlüğü
+                </p>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="lg:ml-64 pt-16 min-h-screen">
+            <div class="p-6">
+                @RenderBody()
+            </div>
+        </main>
+    }
+    else
+    {
+        @RenderBody()
+    }
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        // Sidebar toggle
+        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+        
+        // Dropdown toggle
+        function toggleDropdown() {
+            const menu = document.getElementById('dropdownMenu');
+            menu.classList.toggle('show');
+        }
+        
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('userDropdown');
+            if (!dropdown.contains(e.target)) {
+                const menu = document.getElementById('dropdownMenu');
+                menu.classList.remove('show');
+            }
+        });
+        
+        // Highlight active sidebar link
+        (function() {
+            const path = window.location.pathname.toLowerCase();
+            const links = document.querySelectorAll('#sidebar nav a');
+            links.forEach(function(link) {
+                const href = link.getAttribute('href').toLowerCase();
+                // Exact match or starts with (for sub-pages)
+                if (path === href || (href !== '/dashboard' && path.startsWith(href))) {
+                    link.classList.add('bg-gray-100', 'text-primary', 'font-semibold');
+                    link.classList.remove('text-gray-700');
+                }
+            });
+        })();
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,97 @@
+@{
+    ViewData["Title"] = "Bilgi Bankası";
+}
+
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Bilgi Bankası</h1>
+            <p class="text-gray-600">Sıkça sorulan sorular ve çözüm rehberleri</p>
+        </div>
+        <div class="relative">
+            <input type="text" placeholder="Makale ara..." 
+                   class="w-80 px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Makale 1: Yazıcı -->
+        <a asp-action="Details" asp-route-id="1" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer block no-underline">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-print text-blue-500 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Yazıcıya Nasıl Bağlanır?</h3>
+            <p class="text-gray-600 text-sm mb-4">Ağ yazıcısını Windows 10/11 sistemine ekleme, sürücü yükleme ve kablosuz bağlantı adımları...</p>
+            <div class="flex items-center justify-between">
+                <span class="text-xs text-gray-500"><i class="fas fa-eye mr-1"></i>1,234 görüntüleme</span>
+                <span class="text-xs text-green-600"><i class="fas fa-thumbs-up mr-1"></i>Faydalı</span>
+            </div>
+        </a>
+        
+        <!-- Makale 2: VPN -->
+        <a asp-action="Details" asp-route-id="2" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer block no-underline">
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-shield-alt text-green-500 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">VPN Bağlantısı Kurulumu</h3>
+            <p class="text-gray-600 text-sm mb-4">Belediye VPN ağına uzaktan erişim için gerekli ayarlar ve kimlik doğrulama süreci...</p>
+            <div class="flex items-center justify-between">
+                <span class="text-xs text-gray-500"><i class="fas fa-eye mr-1"></i>987 görüntüleme</span>
+                <span class="text-xs text-green-600"><i class="fas fa-thumbs-up mr-1"></i>Faydalı</span>
+            </div>
+        </a>
+        
+        <!-- Makale 3: E-posta -->
+        <a asp-action="Details" asp-route-id="3" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer block no-underline">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-envelope text-purple-500 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">E-posta Şifre Sıfırlama</h3>
+            <p class="text-gray-600 text-sm mb-4">Kurumsal e-posta hesabınızın şifresini unutmanız durumunda izlemeniz gereken adımlar...</p>
+            <div class="flex items-center justify-between">
+                <span class="text-xs text-gray-500"><i class="fas fa-eye mr-1"></i>2,156 görüntüleme</span>
+                <span class="text-xs text-green-600"><i class="fas fa-thumbs-up mr-1"></i>Faydalı</span>
+            </div>
+        </a>
+        
+        <!-- Makale 4: Bilgisayar Açılış -->
+        <a asp-action="Details" asp-route-id="4" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer block no-underline">
+            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-desktop text-orange-500 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Bilgisayar Açılmıyor</h3>
+            <p class="text-gray-600 text-sm mb-4">Masaüstü bilgisayarın açılmaması sorunu için güç kaynağı ve donanım kontrol listesi...</p>
+            <div class="flex items-center justify-between">
+                <span class="text-xs text-gray-500"><i class="fas fa-eye mr-1"></i>756 görüntüleme</span>
+                <span class="text-xs text-green-600"><i class="fas fa-thumbs-up mr-1"></i>Faydalı</span>
+            </div>
+        </a>
+        
+        <!-- Makale 5: İnternet Bağlantısı -->
+        <a asp-action="Details" asp-route-id="5" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer block no-underline">
+            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-wifi text-red-500 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">İnternet Bağlantı Sorunları</h3>
+            <p class="text-gray-600 text-sm mb-4">Kablosuz ağ bağlantısı kopması durumunda modem resetleme ve IP yapılandırması...</p>
+            <div class="flex items-center justify-between">
+                <span class="text-xs text-gray-500"><i class="fas fa-eye mr-1"></i>1,845 görüntüleme</span>
+                <span class="text-xs text-green-600"><i class="fas fa-thumbs-up mr-1"></i>Faydalı</span>
+            </div>
+        </a>
+        
+        <!-- Makale 6: Dosya Paylaşımı -->
+        <a asp-action="Details" asp-route-id="6" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer block no-underline">
+            <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-folder-open text-indigo-500 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Ortak Dosya Paylaşımı</h3>
+            <p class="text-gray-600 text-sm mb-4">Departmanlar arası güvenli dosya paylaşımı için ağ klasörü oluşturma ve yetkilendirme...</p>
+            <div class="flex items-center justify-between">
+                <span class="text-xs text-gray-500"><i class="fas fa-eye mr-1"></i>623 görüntüleme</span>
+                <span class="text-xs text-green-600"><i class="fas fa-thumbs-up mr-1"></i>Faydalı</span>
+            </div>
+        </a>
+    </div>
+</div>

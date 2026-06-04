@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-primary to-secondary">
+    <!-- Hero Section -->
+    <div class="container mx-auto px-6 py-16">
+        <div class="text-center text-white mb-12">
+            <div class="inline-flex items-center justify-center w-40 h-40 bg-white bg-opacity-20 rounded-2xl mb-6 backdrop-blur-sm p-4">
+                <img src="/images/tuzla-belediyesi-yeni-logo.jpg" alt="Tuzla Belediyesi" class="w-full h-full object-contain drop-shadow-lg" />
+            </div>
+            <h1 class="text-5xl font-bold mb-4">Tuzla Belediyesi</h1>
+            <h2 class="text-3xl font-semibold mb-6">IT Destek Sistemi</h2>
+            <p class="text-xl text-blue-100 max-w-2xl mx-auto mb-8">
+                Bilgi İşlem Müdürlüğü Destek Portalı ile hızlı ve etkin teknik destek alın.
+                Tüm IT taleplerinizi merkezi sistem üzerinden kolayca yönetin.
+            </p>
+        </div>
+        
+        <!-- Login Card -->
+        <div class="max-w-md mx-auto">
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Hoş Geldiniz</h3>
+                    <p class="text-gray-600">Kurumsal hesabınızla giriş yapın</p>
+                </div>
+                
+                <a href="/Account/Login" class="block w-full bg-primary hover:bg-secondary text-white font-semibold py-4 px-6 rounded-lg transition duration-200 transform hover:scale-[1.02] shadow-lg text-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Giriş Yap
+                </a>
+                
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 mr-3 mt-0.5"></i>
+                        <div class="text-sm text-gray-600">
+                            <p class="font-medium mb-2">Sisteme giriş yapabilmek için:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>@@tuzla.bel.tr uzantılı kurumsal e-posta adresiniz olmalıdır</li>
+                                <li>Kurumsal şifrenizi kullanmalısınız</li>
+                                <li>Aktif bir belediye çalışanı olmalısınız</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Features -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-5xl mx-auto">
+            <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 text-white">
+                <div class="w-14 h-14 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-ticket-alt text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Hızlı Talep Oluşturma</h3>
+                <p class="text-blue-100">IT sorunlarınızı kolayca rapor edin, otomatik talep numarası alın.</p>
+            </div>
+            
+            <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 text-white">
+                <div class="w-14 h-14 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-search text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">7/24 Takip</h3>
+                <p class="text-blue-100">Taleplerinizin durumunu istediğiniz zaman takip edin.</p>
+            </div>
+            
+            <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 text-white">
+                <div class="w-14 h-14 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-book text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Bilgi Bankası</h3>
+                <p class="text-blue-100">Sıkça sorulan sorulara anında ulaşın, kendi kendinize çözüm bulun.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-black bg-opacity-20 mt-16 py-8">
+        <div class="container mx-auto px-6 text-center text-white text-opacity-80">
+            <p>&copy; 2026 Tuzla Belediyesi - Bilgi İşlem Müdürlüğü</p>
+            <p class="mt-2 text-sm">Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+</div>

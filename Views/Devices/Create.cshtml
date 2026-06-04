@@ -1,0 +1,120 @@
+@{
+    ViewData["Title"] = "Yeni Cihaz Ekle";
+}
+
+<div class="max-w-3xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+        <a asp-action="Index" class="inline-flex items-center text-primary hover:text-secondary mb-4 transition">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Cihaz Envanteri'ne Dön
+        </a>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Yeni Cihaz Ekle</h1>
+        <p class="text-gray-600">Demirbaş envanterine yeni cihaz kaydı oluşturun</p>
+    </div>
+    
+    @if (TempData["Success"] != null)
+    {
+        <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span>@TempData["Success"]</span>
+            </div>
+        </div>
+    }
+    
+    <!-- Form Card -->
+    <div class="bg-white rounded-xl shadow-md p-8">
+        <form asp-action="Create" method="post" class="space-y-6">
+            @Html.AntiForgeryToken()
+            
+            <!-- Cihaz Adı -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-desktop mr-2"></i>Cihaz Adı *
+                </label>
+                <input type="text" name="deviceName" required
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                       placeholder="Örn: Dell OptiPlex 3010" />
+                <p class="text-xs text-gray-500 mt-1">Cihazın marka ve modeli</p>
+            </div>
+            
+            <!-- Cihaz Türü -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-tag mr-2"></i>Cihaz Türü
+                </label>
+                <select name="deviceType" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition">
+                    @foreach (var type in ViewBag.DeviceTypes as string[])
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </select>
+            </div>
+            
+            <!-- Seri Numarası -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-barcode mr-2"></i>Seri Numarası *
+                </label>
+                <input type="text" name="serialNumber" required
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                       placeholder="Örn: SN2024001" />
+                <p class="text-xs text-gray-500 mt-1">Cihazın seri numarası veya envanter kodu</p>
+            </div>
+            
+            <!-- Atanan Kişi -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-user mr-2"></i>Atanan Kişi
+                </label>
+                <input type="text" name="assignedTo"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                       placeholder="Cihazın zimmetleneceği kişi (opsiyonel)" />
+            </div>
+            
+            <!-- Departman -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-building mr-2"></i>Departman
+                </label>
+                <select name="department"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition">
+                    <option value="">Departman Seçiniz</option>
+                    @foreach (var dept in ViewBag.Departments as string[])
+                    {
+                        <option value="@dept">@dept</option>
+                    }
+                </select>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                <a asp-action="Index" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    İptal
+                </a>
+                <button type="submit" 
+                        class="bg-primary hover:bg-secondary text-white font-semibold py-3 px-8 rounded-lg transition transform hover:scale-[1.02] shadow-lg">
+                    <i class="fas fa-plus-circle mr-2"></i>Cihazı Ekle
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Info Box -->
+    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="flex items-start">
+            <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-0.5"></i>
+            <div class="text-sm text-blue-800">
+                <p class="font-semibold mb-1">Bilgilendirme</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li>Cihaz adı ve seri numarası zorunlu alanlardır.</li>
+                    <li>Atanan kişi ve departman bilgisi opsiyoneldir, daha sonra da eklenebilir.</li>
+                    <li>Cihaz eklendikten sonra envanter listesinden görüntüleyebilirsiniz.</li>
+                    <li>Seri numarasının benzersiz olması önemlidir.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

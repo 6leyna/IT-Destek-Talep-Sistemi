@@ -1,0 +1,46 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+## NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+artifacts/
+
+## User-specific files
+*.rsuser
+*.DotSettings.user
+
+## IDE
+.idea/
+*.swp
+*~.nib
+*.code-workspace
+
+## Database
+*.db
+*.db-shm
+*.db-wal
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Secrets
+appsettings.Development.json
+appsettings.*.json
+!appsettings.json

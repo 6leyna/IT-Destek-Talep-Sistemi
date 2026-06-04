@@ -1,0 +1,269 @@
+@model ITDestek.Models.ViewModels.ReportsViewModel
+
+@{
+    ViewData["Title"] = "Raporlar";
+}
+
+<div class="space-y-6">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Raporlar ve İstatistikler</h1>
+        <p class="text-gray-600">IT destek taleplerinin analizi</p>
+    </div>
+    
+    <!-- Genel İstatistik Kartları -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600 mb-1">Toplam Talep</p>
+                    <p class="text-3xl font-bold text-gray-800">@Model.TotalTickets</p>
+                </div>
+                <div class="bg-blue-100 p-3 rounded-full">
+                    <i class="fas fa-ticket-alt text-blue-600 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600 mb-1">Açık Talepler</p>
+                    <p class="text-3xl font-bold text-orange-600">@Model.OpenTickets</p>
+                </div>
+                <div class="bg-orange-100 p-3 rounded-full">
+                    <i class="fas fa-clock text-orange-600 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600 mb-1">İşlemde</p>
+                    <p class="text-3xl font-bold text-yellow-600">@Model.InProgressTickets</p>
+                </div>
+                <div class="bg-yellow-100 p-3 rounded-full">
+                    <i class="fas fa-cog text-yellow-600 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600 mb-1">Çözüldü</p>
+                    <p class="text-3xl font-bold text-green-600">@Model.ResolvedTickets</p>
+                </div>
+                <div class="bg-green-100 p-3 rounded-full">
+                    <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600 mb-1">Kapalı</p>
+                    <p class="text-3xl font-bold text-gray-600">@Model.ClosedTickets</p>
+                </div>
+                <div class="bg-gray-100 p-3 rounded-full">
+                    <i class="fas fa-times-circle text-gray-600 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Öncelik Dağılımı -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
+            <p class="text-sm opacity-90 mb-1">Düşük Öncelik</p>
+            <p class="text-4xl font-bold">@Model.LowPriority</p>
+        </div>
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+            <p class="text-sm opacity-90 mb-1">Orta Öncelik</p>
+            <p class="text-4xl font-bold">@Model.MediumPriority</p>
+        </div>
+        <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-6 text-white">
+            <p class="text-sm opacity-90 mb-1">Yüksek Öncelik</p>
+            <p class="text-4xl font-bold">@Model.HighPriority</p>
+        </div>
+        <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-6 text-white">
+            <p class="text-sm opacity-90 mb-1">Kritik Öncelik</p>
+            <p class="text-4xl font-bold">@Model.CriticalPriority</p>
+        </div>
+    </div>
+    
+    <!-- Çözüm Süreleri -->
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fas fa-hourglass-half mr-2"></i>Çözüm Süreleri (Saat)
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="text-center p-4 bg-blue-50 rounded-lg">
+                <p class="text-sm text-gray-600 mb-2">En Hızlı</p>
+                <p class="text-3xl font-bold text-blue-600">@Model.FastestResolution.ToString("F1")</p>
+            </div>
+            <div class="text-center p-4 bg-green-50 rounded-lg">
+                <p class="text-sm text-gray-600 mb-2">Ortalama</p>
+                <p class="text-3xl font-bold text-green-600">@Model.AverageResolutionTime.ToString("F1")</p>
+            </div>
+            <div class="text-center p-4 bg-red-50 rounded-lg">
+                <p class="text-sm text-gray-600 mb-2">En Yavaş</p>
+                <p class="text-3xl font-bold text-red-600">@Model.SlowestResolution.ToString("F1")</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Kategori Bazlı Dağılım -->
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fas fa-tags mr-2"></i>En Yaygın Sorunlar
+        </h3>
+        <div class="space-y-3">
+            @foreach (var stat in Model.CategoryStats)
+            {
+                var percentage = Model.TotalTickets > 0 ? (stat.Count * 100.0 / Model.TotalTickets) : 0;
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas @stat.Icon text-primary"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between mb-1">
+                            <span class="font-medium text-gray-700">@stat.CategoryName</span>
+                            <span class="text-sm text-gray-600">@stat.Count talep (%@percentage.ToString("F0"))</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: @percentage%"></div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    
+    <!-- Departman Bazlı Talepler -->
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fas fa-building mr-2"></i>Departman Bazlı Talepler
+        </h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Departman</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Toplam Talep</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Çözülen</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Başarı Oranı</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach (var dept in Model.DepartmentStats)
+                    {
+                        var successRate = dept.TicketCount > 0 ? (dept.ResolvedCount * 100.0 / dept.TicketCount) : 0;
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-building text-primary"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">@dept.DepartmentName</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    @dept.TicketCount
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    @dept.ResolvedCount
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-1 mr-2">
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-green-500 h-2 rounded-full" style="width: @successRate%"></div>
+                                        </div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">%@successRate.ToString("F0")</span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Aylık Talep Grafiği -->
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-gray-800">
+                <i class="fas fa-chart-bar mr-2"></i>Aylık Talep Hacmi (@DateTime.Now.Year)
+            </h3>
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+                <span class="text-sm text-gray-500">Talep Sayısı</span>
+            </div>
+        </div>
+        <div style="position: relative; height: 350px;">
+            <canvas id="monthlyChart"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        const monthLabels = [@Html.Raw(string.Join(",", Model.Months.Select(m => $"\"{m}\"")))];
+        const monthData = [@string.Join(",", Model.TicketCounts)];
+        
+        const ctx = document.getElementById('monthlyChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: monthLabels.length > 0 ? monthLabels : ['Veri yok'],
+                datasets: [{
+                    label: 'Talep Sayısı',
+                    data: monthData.length > 0 ? monthData : [0],
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    barPercentage: 0.6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1f2937',
+                        titleColor: '#fff',
+                        bodyColor: '#d1d5db',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(ctx) { return ctx.parsed.y + ' talep'; }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1, color: '#6b7280' },
+                        grid: { color: '#f3f4f6' }
+                    },
+                    x: {
+                        ticks: { color: '#6b7280' },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+}

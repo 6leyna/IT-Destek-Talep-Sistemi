@@ -1,0 +1,333 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using ITDestek.Data;
+using ITDestek.Models.Entities;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    // Password settings
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 8;
+    
+    // Lockout settings
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    
+    // User settings
+    options.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
+// Configure email validation for tuzla.bel.tr domain
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.SignIn.RequireConfirmedEmail = false; // Set to true if you want email confirmation
+});
+
+builder.Services.AddControllersWithViews();
+
+// Add AutoMapper
+builder.Services.AddAutoMapper(typeof(Program));
+
+// Add FluentValidation
+// builder.Services.AddFluentValidationAutoValidation();
+
+// Add Authorization policies
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("ITStaffOnly", policy => policy.RequireRole("Admin", "ITStaff"));
+});
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Seed database and create default roles/users
+await SeedDataAsync(app.Services);
+
+app.Run();
+
+static async Task SeedDataAsync(IServiceProvider serviceProvider)
+{
+    using var scope = serviceProvider.CreateScope();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    
+    // Seed roles
+    string[] roles = { "Admin", "ITStaff", "Employee" };
+    foreach (var roleName in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+    }
+}
+
+// Separate method for seeding data to avoid scope issues
+async Task SeedDepartmentsAsync(ApplicationDbContext context)
+{
+    if (!context.Departments.Any())
+    {
+        context.Departments.AddRange(
+            new Department { Name = "Bilgi İşlem", Code = "BIT" },
+            new Department { Name = "İnsan Kaynakları", Code = "IK" },
+            new Department { Name = "Mali Hizmetler", Code = "MH" },
+            new Department { Name = "Fen İşleri", Code = "FI" },
+            new Department { Name = "Zabıta", Code = "ZB" }
+        );
+        await context.SaveChangesAsync();
+    }
+    
+    // Seed admin user
+    var adminEmail = "admin@tuzla.bel.tr";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new ApplicationUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true,
+            FirstName = "Sistem",
+            LastName = "Yöneticisi",
+            IsActive = true
+        };
+        
+        var result = await userManager.CreateAsync(adminUser, "Admin123!");
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+    
+    // Seed IT Staff user
+    var itStaffEmail = "ahmet.yilmaz@tuzla.bel.tr";
+    var itStaffUser = await userManager.FindByEmailAsync(itStaffEmail);
+    if (itStaffUser == null)
+    {
+        itStaffUser = new ApplicationUser
+        {
+            UserName = itStaffEmail,
+            Email = itStaffEmail,
+            EmailConfirmed = true,
+            FirstName = "Ahmet",
+            LastName = "Yılmaz",
+            DepartmentId = 1, // Bilgi İşlem
+            IsActive = true
+        };
+        
+        var result = await userManager.CreateAsync(itStaffUser, "Password123!");
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(itStaffUser, "ITStaff");
+        }
+    }
+    
+    // Seed Employee users
+    var employee1Email = "ayse.demir@tuzla.bel.tr";
+    var employee1 = await userManager.FindByEmailAsync(employee1Email);
+    if (employee1 == null)
+    {
+        employee1 = new ApplicationUser
+        {
+            UserName = employee1Email,
+            Email = employee1Email,
+            EmailConfirmed = true,
+            FirstName = "Ayşe",
+            LastName = "Demir",
+            DepartmentId = 2, // İnsan Kaynakları
+            OfficeLocation = "Merkez Bina - 305",
+            IsActive = true
+        };
+        
+        var result = await userManager.CreateAsync(employee1, "Password123!");
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(employee1, "Employee");
+        }
+    }
+    
+    var employee2Email = "mehmet.kaya@tuzla.bel.tr";
+    var employee2 = await userManager.FindByEmailAsync(employee2Email);
+    if (employee2 == null)
+    {
+        employee2 = new ApplicationUser
+        {
+            UserName = employee2Email,
+            Email = employee2Email,
+            EmailConfirmed = true,
+            FirstName = "Mehmet",
+            LastName = "Kaya",
+            DepartmentId = 3, // Mali Hizmetler
+            OfficeLocation = "Merkez Bina - 201",
+            IsActive = true
+        };
+        
+        var result = await userManager.CreateAsync(employee2, "Password123!");
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(employee2, "Employee");
+        }
+    }
+    
+    var employee3Email = "fatma.sahin@tuzla.bel.tr";
+    var employee3 = await userManager.FindByEmailAsync(employee3Email);
+    if (employee3 == null)
+    {
+        employee3 = new ApplicationUser
+        {
+            UserName = employee3Email,
+            Email = employee3Email,
+            EmailConfirmed = true,
+            FirstName = "Fatma",
+            LastName = "Şahin",
+            DepartmentId = 4, // Fen İşleri
+            OfficeLocation = "A Blok - 102",
+            IsActive = true
+        };
+        
+        var result = await userManager.CreateAsync(employee3, "Password123!");
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(employee3, "Employee");
+        }
+    }
+    
+    // Seed categories
+    if (!context.Categories.Any())
+    {
+        context.Categories.AddRange(
+            new Category { Name = "Bilgisayar Arızası", Icon = "fa-desktop" },
+            new Category { Name = "Yazıcı Sorunu", Icon = "fa-print" },
+            new Category { Name = "Telefon Sorunu", Icon = "fa-phone" },
+            new Category { Name = "İnternet Bağlantısı", Icon = "fa-wifi" },
+            new Category { Name = "E-posta Sorunu", Icon = "fa-envelope" },
+            new Category { Name = "Yazılım Talebi", Icon = "fa-code" },
+            new Category { Name = "Donanım Talebi", Icon = "fa-microchip" }
+        );
+        await context.SaveChangesAsync();
+    }
+    
+    // Seed sample tickets from 3 employees
+    if (!context.Tickets.Any())
+    {
+        var ayse = await userManager.FindByEmailAsync("ayse.demir@tuzla.bel.tr");
+        var mehmet = await userManager.FindByEmailAsync("mehmet.kaya@tuzla.bel.tr");
+        var fatma = await userManager.FindByEmailAsync("fatma.sahin@tuzla.bel.tr");
+        
+        context.Tickets.AddRange(
+            new Ticket
+            {
+                UserId = ayse.Id,
+                DepartmentId = 2, // İnsan Kaynakları
+                CategoryId = 1, // Bilgisayar Arızası
+                Priority = ITDestek.Models.Entities.Priority.Yüksek,
+                Status = ITDestek.Models.Entities.Status.Yeni,
+                Title = "Bilgisayar Açılmıyor",
+                Description = "Merkez binadaki bilgisayarım açılmıyor. Ekran karanlık kalıyor ve hiçbir tepki vermiyor. Acil yardım rica olunur.",
+                OfficeLocation = "Merkez Bina - 305",
+                TicketNumber = "IT-2026-0001",
+                CreatedDate = DateTime.Now.AddHours(-2)
+            },
+            new Ticket
+            {
+                UserId = mehmet.Id,
+                DepartmentId = 3, // Mali Hizmetler
+                CategoryId = 4, // İnternet Bağlantısı
+                Priority = ITDestek.Models.Entities.Priority.Orta,
+                Status = ITDestek.Models.Entities.Status.Yeni,
+                Title = "İnternet Bağlantısı Sorunu",
+                Description = "Ofisteki internet bağlantısı sürekli kopuyor. Dosya yüklemeleri yarıda kesiliyor. Kontrol edilmesini rica ederim.",
+                OfficeLocation = "Merkez Bina - 201",
+                TicketNumber = "IT-2026-0002",
+                CreatedDate = DateTime.Now.AddHours(-1)
+            },
+            new Ticket
+            {
+                UserId = fatma.Id,
+                DepartmentId = 4, // Fen İşleri
+                CategoryId = 2, // Yazıcı Sorunu
+                Priority = ITDestek.Models.Entities.Priority.Düsük,
+                Status = ITDestek.Models.Entities.Status.Yeni,
+                Title = "Yazıcı Kağıt Sıkıştırıyor",
+                Description = "A bloktaki yazıcı sürekli kağıt sıkıştırıyor. Her sayfa sonrası duruyor. Servis çağrısı gerekiyor olabilir.",
+                OfficeLocation = "A Blok - 102",
+                TicketNumber = "IT-2026-0003",
+                CreatedDate = DateTime.Now
+            },
+            // NEW: Outlook Kurulumu - Ayşe Demir
+            new Ticket
+            {
+                UserId = ayse.Id,
+                DepartmentId = 2, // İnsan Kaynakları
+                CategoryId = 5, // E-posta Sorunu
+                Priority = ITDestek.Models.Entities.Priority.Orta,
+                Status = ITDestek.Models.Entities.Status.Islemde,
+                Title = "Outlook Kurulumu",
+                Description = "Yeni bilgisayarıma Outlook kurulumu yapılması gerekiyor. E-posta hesabımı yapılandıramıyorum.",
+                OfficeLocation = "Merkez Bina - 305",
+                TicketNumber = "IT-2026-0004",
+                CreatedDate = DateTime.Now.AddMinutes(-45)
+            },
+            // NEW: Muhasebe Programı Lisansı - Mehmet Kaya
+            new Ticket
+            {
+                UserId = mehmet.Id,
+                DepartmentId = 3, // Mali Hizmetler
+                CategoryId = 6, // Yazılım Talebi
+                Priority = ITDestek.Models.Entities.Priority.Yüksek,
+                Status = ITDestek.Models.Entities.Status.Atandi,
+                Title = "Muhasebe Programı Lisansı",
+                Description = "Muhasebe departmanı için yeni lisans alımı gerekiyor. Acil olarak temin edilmesini rica ederiz.",
+                OfficeLocation = "Merkez Bina - 201",
+                TicketNumber = "IT-2026-0005",
+                CreatedDate = DateTime.Now.AddMinutes(-30)
+            },
+            // NEW: Monitör Değişimi - Fatma Şahin
+            new Ticket
+            {
+                UserId = fatma.Id,
+                DepartmentId = 4, // Fen İşleri
+                CategoryId = 7, // Donanım Talebi
+                Priority = ITDestek.Models.Entities.Priority.Kritik,
+                Status = ITDestek.Models.Entities.Status.Cozüldü,
+                Title = "Monitör Değişimi",
+                Description = "Eski monitörüm arızalandı, görüntü gelmiyor. Yeni monitör talebi oluşturuyorum. Teşekkürler.",
+                OfficeLocation = "A Blok - 102",
+                TicketNumber = "IT-2026-0006",
+                CreatedDate = DateTime.Now.AddMinutes(-90),
+                ResolvedDate = DateTime.Now.AddMinutes(-15)
+            }
+        );
+        await context.SaveChangesAsync();
+    }
+}

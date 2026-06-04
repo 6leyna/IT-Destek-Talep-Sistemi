@@ -1,0 +1,228 @@
+@model ITDestek.Controllers.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="space-y-6">
+    <!-- Welcome Header -->
+    <div class="bg-gradient-to-r from-primary to-secondary rounded-2xl shadow-lg p-8 text-white">
+        <h1 class="text-3xl font-bold mb-2">Hoş Geldiniz, @ViewBag.UserName!</h1>
+        <p class="text-blue-100">Tuzla Belediyesi IT Destek Sistemi'ne hoş geldiniz.</p>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Open Tickets -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm font-medium mb-1">Açık Talepler</p>
+                    <h3 class="text-3xl font-bold text-gray-800">@Model.OpenTickets</h3>
+                </div>
+                <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-inbox text-blue-500 text-2xl"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <span class="text-xs text-gray-500">Yeni ve atanmış talepler</span>
+            </div>
+        </div>
+        
+        <!-- In Progress -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm font-medium mb-1">İşlemde</p>
+                    <h3 class="text-3xl font-bold text-gray-800">@Model.InProgressTickets</h3>
+                </div>
+                <div class="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-spinner text-orange-500 text-2xl"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <span class="text-xs text-gray-500">Devam eden talepler</span>
+            </div>
+        </div>
+        
+        <!-- Resolved -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm font-medium mb-1">Çözüldü</p>
+                    <h3 class="text-3xl font-bold text-gray-800">@Model.ResolvedTickets</h3>
+                </div>
+                <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <span class="text-xs text-gray-500">Tamamlanan talepler</span>
+            </div>
+        </div>
+        
+        <!-- Avg Resolution Time -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm font-medium mb-1">Ort. Çözüm Süresi</p>
+                    <h3 class="text-2xl font-bold text-gray-800">@Model.AverageResolutionTimeFormatted</h3>
+                </div>
+                <div class="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-clock text-purple-500 text-2xl"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <span class="text-xs text-gray-500">Ortalama çözüm süresi</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <a href="/Tickets/Create" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition transform hover:-translate-y-1">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-plus-circle text-blue-500 text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-800">Yeni Talep</h4>
+                    <p class="text-sm text-gray-500">IT desteği talep edin</p>
+                </div>
+            </div>
+        </a>
+        
+        <a href="/Tickets" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition transform hover:-translate-y-1">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-list-alt text-green-500 text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-800">Taleplerim</h4>
+                    <p class="text-sm text-gray-500">Taleplerinizi görüntüleyin</p>
+                </div>
+            </div>
+        </a>
+        
+        <a href="/KnowledgeBase" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition transform hover:-translate-y-1">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-book text-purple-500 text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-800">Bilgi Bankası</h4>
+                    <p class="text-sm text-gray-500">Sıkça sorulan sorular</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Recent Tickets Table -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-gray-800">Son Talepler</h2>
+            <a href="/Tickets" class="text-sm text-primary hover:text-secondary font-medium">Tümünü Gör →</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Talep No</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Başlık</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Atanan Kişi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Öncelik</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarih</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @if (Model.RecentTickets.Any())
+                    {
+                        @foreach (var ticket in Model.RecentTickets.Take(5))
+                        {
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm font-semibold text-gray-900">@ticket.TicketNumber</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm text-gray-900">@ticket.Title</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm text-gray-600">@ticket.Category.Name</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if (ticket.AssignedTo != null)
+                                    {
+                                        <span class="text-sm text-gray-900">@ticket.AssignedTo.FirstName @ticket.AssignedTo.LastName</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-sm text-gray-400">-</span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @{
+                                        var priorityClass = ticket.Priority switch
+                                        {
+                                            ITDestek.Models.Entities.Priority.Düsük => "bg-gray-100 text-gray-800",
+                                            ITDestek.Models.Entities.Priority.Orta => "bg-blue-100 text-blue-800",
+                                            ITDestek.Models.Entities.Priority.Yüksek => "bg-orange-100 text-orange-800",
+                                            ITDestek.Models.Entities.Priority.Kritik => "bg-red-100 text-red-800",
+                                            _ => "bg-gray-100 text-gray-800"
+                                        };
+                                        
+                                        var priorityText = ticket.Priority switch
+                                        {
+                                            ITDestek.Models.Entities.Priority.Düsük => "Düşük",
+                                            ITDestek.Models.Entities.Priority.Orta => "Orta",
+                                            ITDestek.Models.Entities.Priority.Yüksek => "Yüksek",
+                                            ITDestek.Models.Entities.Priority.Kritik => "Kritik",
+                                            _ => "Bilinmiyor"
+                                        };
+                                    }
+                                    <span class="px-2 py-1 text-xs font-medium rounded-full @priorityClass">@priorityText</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @{
+                                        var statusClass = ticket.Status switch
+                                        {
+                                            ITDestek.Models.Entities.Status.Yeni => "bg-blue-100 text-blue-800",
+                                            ITDestek.Models.Entities.Status.Atandi => "bg-purple-100 text-purple-800",
+                                            ITDestek.Models.Entities.Status.Islemde => "bg-orange-100 text-orange-800",
+                                            ITDestek.Models.Entities.Status.Cozüldü => "bg-green-100 text-green-800",
+                                            ITDestek.Models.Entities.Status.Kapali => "bg-gray-100 text-gray-800",
+                                            _ => "bg-gray-100 text-gray-800"
+                                        };
+                                        
+                                        var statusText = ticket.Status switch
+                                        {
+                                            ITDestek.Models.Entities.Status.Yeni => "Yeni",
+                                            ITDestek.Models.Entities.Status.Atandi => "Atandı",
+                                            ITDestek.Models.Entities.Status.Islemde => "İşlemde",
+                                            ITDestek.Models.Entities.Status.Cozüldü => "Çözüldü",
+                                            ITDestek.Models.Entities.Status.Kapali => "Kapalı",
+                                            _ => "Bilinmiyor"
+                                        };
+                                    }
+                                    <span class="px-2 py-1 text-xs font-medium rounded-full @statusClass">@statusText</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm text-gray-500">@ticket.CreatedDate.ToString("dd.MM.yyyy HH:mm")</span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-inbox text-4xl text-gray-300 mb-3"></i>
+                                <p>Henüz talep bulunmamaktadır.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

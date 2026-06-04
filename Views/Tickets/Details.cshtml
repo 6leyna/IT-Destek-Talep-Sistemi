@@ -1,0 +1,260 @@
+@model ITDestek.Models.Entities.Ticket
+@{
+    ViewData["Title"] = "Talep Detayı";
+}
+
+<div class="max-w-6xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <div class="flex items-center space-x-3 mb-2">
+                <a href="/Tickets" class="text-primary hover:text-secondary">
+                    <i class="fas fa-arrow-left"></i> Geri
+                </a>
+                <h1 class="text-3xl font-bold text-gray-800">@Model.TicketNumber</h1>
+            </div>
+            <p class="text-gray-600">@Model.Title</p>
+        </div>
+        @{
+            var statusClass = Model.Status switch
+            {
+                ITDestek.Models.Entities.Status.Yeni => "bg-blue-100 text-blue-800",
+                ITDestek.Models.Entities.Status.Atandi => "bg-purple-100 text-purple-800",
+                ITDestek.Models.Entities.Status.Islemde => "bg-orange-100 text-orange-800",
+                ITDestek.Models.Entities.Status.Cozüldü => "bg-green-100 text-green-800",
+                ITDestek.Models.Entities.Status.Kapali => "bg-gray-100 text-gray-800",
+                _ => "bg-gray-100 text-gray-800"
+            };
+            
+            var statusText = Model.Status switch
+            {
+                ITDestek.Models.Entities.Status.Yeni => "Yeni",
+                ITDestek.Models.Entities.Status.Atandi => "Atandı",
+                ITDestek.Models.Entities.Status.Islemde => "İşlemde",
+                ITDestek.Models.Entities.Status.Cozüldü => "Çözüldü",
+                ITDestek.Models.Entities.Status.Kapali => "Kapalı",
+                _ => "Bilinmiyor"
+            };
+        }
+        <span class="px-4 py-2 text-sm font-medium rounded-full @statusClass">@statusText</span>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Ticket Info Card -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Talep Bilgileri</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500 mb-1">Oluşturan</label>
+                        <p class="text-gray-800 font-medium">@Model.User.FirstName @Model.User.LastName</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500 mb-1">Departman</label>
+                        <p class="text-gray-800">@Model.Department.Name</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500 mb-1">Kategori</label>
+                        <p class="text-gray-800">@Model.Category.Name</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500 mb-1">Öncelik</label>
+                        @{
+                            var priorityClass = Model.Priority switch
+                            {
+                                ITDestek.Models.Entities.Priority.Düsük => "bg-gray-100 text-gray-800",
+                                ITDestek.Models.Entities.Priority.Orta => "bg-blue-100 text-blue-800",
+                                ITDestek.Models.Entities.Priority.Yüksek => "bg-orange-100 text-orange-800",
+                                ITDestek.Models.Entities.Priority.Kritik => "bg-red-100 text-red-800",
+                                _ => "bg-gray-100 text-gray-800"
+                            };
+                            
+                            var priorityText = Model.Priority switch
+                            {
+                                ITDestek.Models.Entities.Priority.Düsük => "Düşük",
+                                ITDestek.Models.Entities.Priority.Orta => "Orta",
+                                ITDestek.Models.Entities.Priority.Yüksek => "Yüksek",
+                                ITDestek.Models.Entities.Priority.Kritik => "Kritik",
+                                _ => "Bilinmiyor"
+                            };
+                        }
+                        <span class="px-3 py-1 text-sm font-medium rounded-full @priorityClass">@priorityText</span>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500 mb-1">Ofis Konumu</label>
+                        <p class="text-gray-800">@Model.OfficeLocation ?? "-"</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500 mb-1">Atanan Tekniker</label>
+                        @if (Model.AssignedTo != null)
+                        {
+                            <p class="text-gray-800">@Model.AssignedTo.FirstName @Model.AssignedTo.LastName</p>
+                        }
+                        else
+                        {
+                            <p class="text-gray-400">Henüz atanmadı</p>
+                        }
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500 mb-1">Oluşturulma Tarihi</label>
+                        <p class="text-gray-800">@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500 mb-1">Güncelleme Tarihi</label>
+                        <p class="text-gray-800">@(Model.UpdatedDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</p>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <label class="block text-sm font-medium text-gray-500 mb-2">Açıklama</label>
+                    <p class="text-gray-800 whitespace-pre-line">@Model.Description</p>
+                </div>
+            </div>
+            
+            <!-- Comments Section -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Yorumlar & Güncellemeler</h2>
+                
+                @if (Model.Comments.Any())
+                {
+                    <div class="space-y-4">
+                        @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedDate))
+                        {
+                            <div class="border-l-4 @(comment.IsInternal ? "border-purple-500 bg-purple-50" : "border-blue-500 bg-blue-50") rounded-r-lg p-4">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <p class="font-semibold text-gray-800">@comment.User.FirstName @comment.User.LastName</p>
+                                        <p class="text-xs text-gray-500">@comment.CreatedDate.ToString("dd.MM.yyyy HH:mm")</p>
+                                    </div>
+                                    @if (comment.IsInternal)
+                                    {
+                                        <span class="px-2 py-1 bg-purple-200 text-purple-800 text-xs rounded-full">Dahili Not</span>
+                                    }
+                                </div>
+                                <p class="text-gray-700">@comment.Comment</p>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-gray-500 text-center py-8">Henüz yorum bulunmamaktadır.</p>
+                }
+                
+                <!-- Add Comment Form -->
+                <form asp-action="AddComment" method="post" class="mt-6 pt-6 border-t border-gray-200">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ticketId" value="@Model.Id" />
+                    
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Yorum Ekle</label>
+                    <textarea name="comment" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Yorumunuzu yazın..."></textarea>
+                    
+                    @if (User.IsInRole("Admin") || User.IsInRole("ITStaff"))
+                    {
+                        <div class="mt-3 flex items-center space-x-4">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="isInternal" value="true" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                                <span class="ml-2 text-sm text-gray-600">Dahili Not (Kullanıcı Görmez)</span>
+                            </label>
+                        </div>
+                    }
+                    
+                    <div class="mt-3 flex items-center justify-end space-x-3">
+                        <button type="submit" class="bg-primary hover:bg-secondary text-white font-semibold py-2 px-6 rounded-lg transition">
+                            <i class="fas fa-paper-plane mr-2"></i>Gönder
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Actions Card -->
+            @if (User.IsInRole("Admin") || User.IsInRole("ITStaff"))
+            {
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-lg font-bold text-gray-800 mb-4">Durum Güncelle</h2>
+                
+                <form asp-action="UpdateStatus" method="post" class="space-y-3">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    
+                    <select name="newStatus" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="Yeni" selected="@(Model.Status == ITDestek.Models.Entities.Status.Yeni)">Yeni</option>
+                        <option value="Atandi" selected="@(Model.Status == ITDestek.Models.Entities.Status.Atandi)">Atandı</option>
+                        <option value="Islemde" selected="@(Model.Status == ITDestek.Models.Entities.Status.Islemde)">İşlemde</option>
+                        <option value="Cozüldü" selected="@(Model.Status == ITDestek.Models.Entities.Status.Cozüldü)">Çözüldü</option>
+                        <option value="Kapali" selected="@(Model.Status == ITDestek.Models.Entities.Status.Kapali)">Kapalı</option>
+                    </select>
+                    
+                    <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-semibold py-2 px-4 rounded-lg transition">
+                        <i class="fas fa-sync-alt mr-2"></i>Durumu Güncelle
+                    </button>
+                </form>
+                
+                @if (TempData["Success"] != null)
+                {
+                    <div class="mt-4 bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-lg text-sm">
+                        <i class="fas fa-check-circle mr-1"></i>@TempData["Success"]
+                    </div>
+                }
+            </div>
+            
+            <!-- Assign Technician Card -->
+            @if (ViewBag.IsAdmin == true)
+            {
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-lg font-bold text-gray-800 mb-4">Tekniker Ata</h2>
+                
+                <form asp-action="AssignTechnician" method="post" class="space-y-3">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    
+                    <select name="technicianId" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="">Tekniker Seçiniz</option>
+                        @if (ViewBag.ITStaff != null)
+                        {
+                            foreach (var staff in ViewBag.ITStaff as SelectList)
+                            {
+                                <option value="@staff.Value">@staff.Text</option>
+                            }
+                        }
+                    </select>
+                    
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition">
+                        <i class="fas fa-user-plus mr-2"></i>Tekniker Ata
+                    </button>
+                </form>
+            </div>
+            }
+            }
+            
+            <!-- Attachments Card -->
+            @if (Model.Attachments.Any())
+            {
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-lg font-bold text-gray-800 mb-4">Ekler</h2>
+                    <div class="space-y-2">
+                        @foreach (var attachment in Model.Attachments)
+                        {
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-file text-2xl text-blue-500"></i>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-800">@attachment.FileName</p>
+                                        <p class="text-xs text-gray-500">@(attachment.FileSize / 1024) KB</p>
+                                    </div>
+                                </div>
+                                <a href="#" class="text-primary hover:text-secondary">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

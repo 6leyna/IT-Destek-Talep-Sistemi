@@ -1,0 +1,118 @@
+@{
+    ViewData["Title"] = "Ayarlar";
+    var activeTab = ViewBag.ActiveTab as string ?? "departmanlar";
+    var departments = ViewBag.Departments as List<ITDestek.Models.Entities.Department> ?? new List<ITDestek.Models.Entities.Department>();
+    var categories = ViewBag.Categories as List<ITDestek.Models.Entities.Category> ?? new List<ITDestek.Models.Entities.Category>();
+}
+
+<div class="space-y-6">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Sistem Ayarları</h1>
+        <p class="text-gray-600">Yönetici paneli</p>
+    </div>
+    
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+            <i class="fas fa-check-circle mr-2"></i>@TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            <i class="fas fa-exclamation-circle mr-2"></i>@TempData["Error"]
+        </div>
+    }
+    
+    <div class="bg-white rounded-xl shadow-md">
+        <div class="border-b border-gray-200">
+            <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                <a href="/Settings?tab=departmanlar" class="@(activeTab == "departmanlar" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Departmanlar</a>
+                <a href="/Settings?tab=kategoriler" class="@(activeTab == "kategoriler" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-700") whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Kategoriler</a>
+            </nav>
+        </div>
+        
+        <div class="p-6">
+            @if (activeTab == "departmanlar")
+            {
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Departman Yönetimi</h2>
+                
+                <form asp-action="AddDepartment" method="post" class="mb-6">
+                    @Html.AntiForgeryToken()
+                    <div class="grid grid-cols-3 gap-4">
+                        <input type="text" name="name" placeholder="Departman adı" required class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <input type="text" name="code" placeholder="Kod (örn: BIT)" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <button type="submit" class="bg-primary hover:bg-secondary text-white font-semibold py-2 px-4 rounded-lg transition">
+                            <i class="fas fa-plus mr-2"></i>Ekle
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="space-y-3">
+                    @if (departments.Any())
+                    {
+                        @foreach (var dept in departments)
+                        {
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <p class="font-semibold text-gray-800">@dept.Name</p>
+                                    <p class="text-sm text-gray-500">Kod: @(dept.Code ?? "-")</p>
+                                </div>
+                                <form asp-action="DeleteDepartment" asp-route-id="@dept.Id" method="post" onsubmit="return confirm('@dept.Name departmanını silmek istediğinizden emin misiniz?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-gray-500 text-center py-4">Henüz departman bulunmamaktadır.</p>
+                    }
+                </div>
+            }
+            else if (activeTab == "kategoriler")
+            {
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Kategori Yönetimi</h2>
+                
+                <form asp-action="AddCategory" method="post" class="mb-6">
+                    @Html.AntiForgeryToken()
+                    <div class="grid grid-cols-3 gap-4">
+                        <input type="text" name="name" placeholder="Kategori adı" required class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <input type="text" name="icon" placeholder="İkon (örn: fa-laptop)" value="fa-circle" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <button type="submit" class="bg-primary hover:bg-secondary text-white font-semibold py-2 px-4 rounded-lg transition">
+                            <i class="fas fa-plus mr-2"></i>Ekle
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="space-y-3">
+                    @if (categories.Any())
+                    {
+                        @foreach (var cat in categories)
+                        {
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas @(cat.Icon ?? "fa-circle") text-primary text-lg"></i>
+                                    <span class="font-semibold text-gray-800">@cat.Name</span>
+                                </div>
+                                <form asp-action="DeleteCategory" asp-route-id="@cat.Id" method="post" onsubmit="return confirm('@cat.Name kategorisini silmek istediğinizden emin misiniz?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-gray-500 text-center py-4">Henüz kategori bulunmamaktadır.</p>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

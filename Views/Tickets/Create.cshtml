@@ -1,0 +1,150 @@
+@model ITDestek.Controllers.TicketCreateViewModel
+@{
+    ViewData["Title"] = "Yeni Talep Oluştur";
+}
+
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Yeni Talep Oluştur</h1>
+        <p class="text-gray-600">BT destek talebinizi oluşturun, ekibimiz en kısa sürede size yardımcı olacaktır.</p>
+    </div>
+    
+    @if (TempData["Success"] != null)
+    {
+        <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span>@TempData["Success"]</span>
+            </div>
+        </div>
+    }
+    
+    <!-- Form Card -->
+    <div class="bg-white rounded-xl shadow-md p-8">
+        <form asp-action="Create" method="post" enctype="multipart/form-data" class="space-y-6">
+            @Html.AntiForgeryToken()
+            
+            <!-- User Info (Auto-filled) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-lg">
+                <div>
+                    <label class="block text-sm font-medium text-gray-500 mb-1">Ad Soyad</label>
+                    <p class="text-gray-800 font-medium">@User.Identity.Name</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-500 mb-1">E-posta</label>
+                    <p class="text-gray-800 font-medium">@User.Identity.Name</p>
+                </div>
+            </div>
+            
+            <!-- Department -->
+            <div>
+                <label asp-for="DepartmentId" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-building mr-2"></i>Departman
+                </label>
+                <select asp-for="DepartmentId" 
+                        asp-items="ViewBag.Departments"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition duration-200">
+                    <option value="">Departman Seçiniz</option>
+                </select>
+                <span asp-validation-for="DepartmentId" class="text-red-600 text-sm mt-1 block"></span>
+            </div>
+            
+            <!-- Office Location -->
+            <div>
+                <label asp-for="OfficeLocation" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-map-marker-alt mr-2"></i>Ofis Konumu (Bina / Oda)
+                </label>
+                <input asp-for="OfficeLocation" 
+                       type="text" 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition duration-200"
+                       placeholder="Örn: Merkez Bina - 305" />
+                <span asp-validation-for="OfficeLocation" class="text-red-600 text-sm mt-1 block"></span>
+            </div>
+            
+            <!-- Category -->
+            <div>
+                <label asp-for="CategoryId" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-tags mr-2"></i>Kategori
+                </label>
+                <select asp-for="CategoryId" 
+                        asp-items="ViewBag.Categories"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition duration-200">
+                    <option value="">Kategori Seçiniz</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-red-600 text-sm mt-1 block"></span>
+            </div>
+            
+            <!-- Priority -->
+            <div>
+                <label asp-for="Priority" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>Öncelik
+                </label>
+                <select asp-for="Priority" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition duration-200">
+                    <option value="Düsük">Düşük</option>
+                    <option value="Orta" selected>Orta</option>
+                    <option value="Yüksek">Yüksek</option>
+                    <option value="Kritik">Kritik</option>
+                </select>
+                <span asp-validation-for="Priority" class="text-red-600 text-sm mt-1 block"></span>
+            </div>
+            
+            <!-- Description -->
+            <div>
+                <label asp-for="Description" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-comment-alt mr-2"></i>Açıklama
+                </label>
+                <textarea asp-for="Description" 
+                          rows="6" 
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition duration-200"
+                          placeholder="Sorununuzu detaylı olarak açıklayınız..."></textarea>
+                <span asp-validation-for="Description" class="text-red-600 text-sm mt-1 block"></span>
+            </div>
+            
+            <!-- Attachment Upload -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-paperclip mr-2"></i>Dosya Eki (Opsiyonel)
+                </label>
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition duration-200">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
+                    <p class="text-sm text-gray-600 mb-2">Dosyaları buraya sürükleyin veya tıklayarak seçin</p>
+                    <p class="text-xs text-gray-500">Maksimum dosya boyutu: 10MB (PDF, JPG, PNG)</p>
+                    <input type="file" name="files" multiple class="mt-4" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                <a href="/Tickets" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
+                    İptal
+                </a>
+                <button type="submit" 
+                        class="bg-primary hover:bg-secondary text-white font-semibold py-3 px-8 rounded-lg transition duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-xl">
+                    <i class="fas fa-paper-plane mr-2"></i>Talebi Gönder
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Info Box -->
+    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="flex items-start">
+            <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-0.5"></i>
+            <div class="text-sm text-blue-800">
+                <p class="font-semibold mb-1">Bilgilendirme</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li>Talebiniz oluşturulduktan sonra size bir talep numarası atanacaktır.</li>
+                    <li>Bu numara ile talebinizin durumunu takip edebilirsiniz.</li>
+                    <li>IT ekibimiz talebinizi inceleyip en kısa sürede size dönüş yapacaktır.</li>
+                    <li>Acil durumlarda lütfen Bilgi İşlem Müdürlüğü'nü telefonla arayınız.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
